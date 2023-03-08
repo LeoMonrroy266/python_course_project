@@ -1,4 +1,4 @@
-# Course coding project
+# Coding project
 Repository for the coding project part of the course. 
 Has currently one notebook used for analysis of SAXS data. 
 ## Aim:
