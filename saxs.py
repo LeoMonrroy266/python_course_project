@@ -27,10 +27,10 @@ class ScatterData:
          experimental error, e
 
         """
-        df = pd.read_csv(file)
-        self.q = df['q']
-        self.i = df['I1']
-        self.error = df['I2']
+        df = pd.read_csv(file, names=['q', 'I1', 'I2'], index_col=False, sep=',')
+        self.q = df['q'].to_numpy()
+        self.i = df['I1'].to_numpy()
+        self.error = df['I2'].to_numpy()
 
     def set_data(self, q, i, e=None):
         """
