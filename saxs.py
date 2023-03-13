@@ -49,3 +49,26 @@ class ScatterData:
         self.i = i
         self.error = e
 
+    def cut_q(self, q_min, q_max):
+        indices = np.logical_and(q_min <= self.q, self.q <= q_max)
+        q = self.q[indices]
+        i = self.i[indices]
+        if self.error != []:
+            error = self.error[indices]
+        else:
+            error = []
+        copy = ScatterData()
+        copy.set_data(q, i, error)
+        return copy
+
+    def scale_intensity(self, factor):
+        copy = ScatterData()
+        scaled_intensity = factor * self.i
+        copy.set_data(self.q, scaled_intensity, self.error)
+        return copy
+
+    def scale_q(self, factor):
+        copy = ScatterData()
+        scaled_q = factor * self.q
+        copy.set_data(scaled_q, self.i, self.error)
+        return copy
