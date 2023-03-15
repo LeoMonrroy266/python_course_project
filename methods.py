@@ -5,6 +5,8 @@ import numpy as np
 from saxs import ScatterData
 from scipy import optimize
 from sklearn.metrics import r2_score
+import re
+import os
 
 def calc_diff(light, dark):
     """
@@ -24,7 +26,7 @@ def calc_diff(light, dark):
     diff_vector = light.i - dark.i
     error_vector = (light.error + dark.error)/2
     diff_scatter = ScatterData()
-    diff_scatter.set_data(diff_vector, light.q, error_vector)
+    diff_scatter.set_data(light.q, diff_vector, error_vector)
     return diff_scatter
 
 def buffer_sub(data, buffer, q, factor=1):
@@ -72,7 +74,7 @@ def chi_square(v1, v2, v1_error):
 def interpolate(q_target, data):
     i = np.interp(q_target, data.q, data.i)
     interpolated_curve = ScatterData()
-    interpolated_curve.set_data(i, q_target)
+    interpolated_curve.set_data(q_target,i)
     return interpolated_curve
 
 def SSE(v1, v2, initial_guess):
@@ -98,7 +100,33 @@ def SSE(v1, v2, initial_guess):
     fopt = answer[1]
     return minimum, fopt
 
-def calc_r2(v1,fit):
+def calc_r2(v1, fit):
+    """
+    Calculates the R² between two curves metric using
+    the sk.learn package
+
+    Parameters
+    ----------
+    v1 : np.array
+    fit : np.array
+
+    Returns
+    -------
+    R² value for the curves
+    """
     r2 = r2_score(v1, fit)
     return r2
 
+def get_rg(file):
+    f = open(file, 'r')
+    match = re.findall(r'\bRg: \w+.\w+', f.readlines()[0])
+    rg = match[0].replace('Rg: ', '')
+    return rg
+
+
+def store_rgs(save_path):
+    data_path = '/home/leonardo/Solution_Scattering_2208/AsLOV2/AF2_simulated_xfel_q/calc_scattering'
+    files = [os.path.join(data_path, file) for file in os.listdir(data_path)]
+    files.sort()
+    rgs = np.array(list(map(get_rg, files))).astype(float)
+    np.save(f'{save_path}/rgs', rgs)
