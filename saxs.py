@@ -50,10 +50,23 @@ class ScatterData:
         self.error = e
 
     def cut_q(self, q_min, q_max):
+        """
+        Adjust current q-range of scattering data
+        to a new desired range
+        Parameters
+        ----------
+        q_min : int
+        q_max : int
+
+        Returns
+        -------
+        A new ScatteringData object with new intensity, error and
+        q-range adjusted to the newly set q-range.
+        """
         indices = np.logical_and(q_min <= self.q, self.q <= q_max)
         q = self.q[indices]
         i = self.i[indices]
-        if self.error != []:
+        if not self.is_error():
             error = self.error[indices]
         else:
             error = []
@@ -61,14 +74,79 @@ class ScatterData:
         copy.set_data(q, i, error)
         return copy
 
-    def scale_intensity(self, factor):
-        copy = ScatterData()
-        scaled_intensity = factor * self.i
+    def scale_intensity(self, k):
+        """
+        Scales the intensity of the data by a factor k
+        Parameters
+        ----------
+        k : int
+
+        Returns
+        -------
+        A new ScatterData object with scaled intensity
+
+        """
+        copy = self.copy()
+        scaled_intensity = k * self.i
         copy.set_data(self.q, scaled_intensity, self.error)
         return copy
 
-    def scale_q(self, factor):
-        copy = ScatterData()
-        scaled_q = factor * self.q
+    def scale_q(self, k):
+        """
+        Scales the q-vector of the data by a factor k
+        (Used to make data comparable between Å⁻¹ and nm⁻¹)
+        Parameters
+        ----------
+        k : int
+
+        Returns
+        -------
+         A new ScatterData object with scaled q
+        """
+        copy = self.copy()
+        scaled_q = k * self.q
         copy.set_data(scaled_q, self.i, self.error)
         return copy
+
+    def is_error(self):
+        """
+        Help function to see if errors are empty
+        Returns
+        -------
+        Boolean value corresponding to state.
+        """
+        if self.error == []:
+            return True
+        else:
+            return False
+
+    def copy(self):
+        """
+        Creates a new blank ScatterData objects
+        (Used to return a new instance, to no overwrite current object)
+        Returns
+        -------
+        A new ScatterData object
+        """
+        copy = ScatterData()
+        return copy
+
+    def remove_nan(self):
+        """
+        Removes NaN from intensity and removes those
+        intensities and corresponding q-values.
+        Returns
+        -------
+        A new ScatterData object without the NaN intensities
+        """
+        indices = np.where(self.i == self.i)
+        i = self.i[indices]
+        q = self.q[indices]
+        if not self.is_error():
+            error = self.error[indices]
+        else:
+            error = []
+        copy = self.copy()
+        copy.set_data(q, i, error)
+        return copy
+
