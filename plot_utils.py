@@ -23,7 +23,7 @@ def get_rg_diff(indices_light, indices_dark, rg):
     rg_diff = [rg[m1] - rg[m2] for m1, m2 in zip(indices_light, indices_dark)]
     return rg_diff
 
-def plotter(indices, model1, model2, scales, ax):
+def plotter(indices, model1, model2, scales, AF2_data, ax, q_min, q_max):
     """
     Plots the difference intensities between a set of intensities
     Parameters
@@ -48,15 +48,20 @@ def plotter(indices, model1, model2, scales, ax):
 
     """
     for i in indices:
-        m1 = model1[i]
-        m2 = model2[i]
-        diff = calc_diff(m1, m2)
+        indices_light = model1[i]
+        indices_dark = model2[i]
+        light = AF2_data[indices_light]
+        dark = AF2_data[indices_dark]
+        diff = calc_diff(light, dark)
+        diff = diff.scale_q(10)
+        diff = diff.cut_q(q_min, q_max)
+
         scale = scales[i]
 
         if i == indices[-1]:
-            ax.plot(diff.q, diff.i*scale, linewidth=0.5, color='Blue', label='Theoretical diff. signal')
+            ax.plot(diff.q, diff.i/1e5*scale/diff.q, linewidth=0.5, color='Blue', label='Theoretical diff. signal')
         else:
-            ax.plot(diff.q, diff.i*scale, linewidth=0.5, color='Blue')
+            ax.plot(diff.q, diff.i/1e5*scale/diff.q, linewidth=0.5, color='Blue')
 
 
 def plot_r2(data, save_path, save=False):
@@ -167,7 +172,7 @@ def plot_rg_diff_activation(rg_diff, activation, save_path, save=False):
     ax.set_title(r'$\Delta$Rg Vs. Activation ratio')
     ax.set_ylabel('Activation ratio')
     ax.set_xlabel(r'$\Delta$Rg')
-    ax.scatter(rg_diff, activation)
+    ax.scatter(rg_diff, abs(activation))
     if save:
         plt.savefig(f'{save_path}/scatter_rg_activation.png', bbox_inches='tight', facecolor=(1, 1, 1))
 
