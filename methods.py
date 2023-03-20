@@ -95,7 +95,7 @@ def SSE(v1, v2, initial_guess):
 
     """
     calc_factor = lambda x: np.nansum((v1 - (v2 * x)) ** 2)
-    answer = optimize.fmin(calc_factor, initial_guess, full_output=True, disp=True)
+    answer = optimize.fmin(calc_factor, initial_guess, full_output=True, disp=False)
     minimum = answer[0]
     fopt = answer[1]
     return minimum, fopt
