@@ -74,7 +74,7 @@ def chi_square(v1, v2, v1_error):
 def interpolate(q_target, data):
     i = np.interp(q_target, data.q, data.i)
     interpolated_curve = ScatterData()
-    interpolated_curve.set_data(q_target,i)
+    interpolated_curve.set_data(q_target, i)
     return interpolated_curve
 
 def SSE(v1, v2, initial_guess):
@@ -95,7 +95,7 @@ def SSE(v1, v2, initial_guess):
 
     """
     calc_factor = lambda x: np.nansum((v1 - (v2 * x)) ** 2)
-    answer = optimize.fmin(func=calc_factor, x0=initial_guess, full_output=True, disp=False)
+    answer = optimize.fmin(calc_factor, initial_guess, full_output=True, disp=True)
     minimum = answer[0]
     fopt = answer[1]
     return minimum, fopt
@@ -118,6 +118,18 @@ def calc_r2(v1, fit):
     return r2
 
 def get_rg(file):
+    """
+    Loads the radius of gyrations and extracts them
+
+    Parameters
+    ----------
+    file : str
+    path to crysol outputs
+
+    Returns
+    -------
+    Rg from a csv file
+    """
     f = open(file, 'r')
     match = re.findall(r'\bRg: \w+.\w+', f.readlines()[0])
     rg = match[0].replace('Rg: ', '')
@@ -125,6 +137,17 @@ def get_rg(file):
 
 
 def store_rgs(save_path):
+    """
+    Store radius of gyrations of models
+    Parameters
+    ----------
+    save_path : str
+
+    Returns
+    -------
+    Store radius of gyrations into
+    desired path
+    """
     data_path = '/home/leonardo/Solution_Scattering_2208/AsLOV2/AF2_simulated_xfel_q/calc_scattering'
     files = [os.path.join(data_path, file) for file in os.listdir(data_path)]
     files.sort()
