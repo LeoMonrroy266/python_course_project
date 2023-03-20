@@ -59,7 +59,7 @@ def plotter(indices, model1, model2, scales, AF2_data, ax, q_min, q_max):
         scale = scales[i]
 
         if i == indices[-1]:
-            ax.plot(diff.q, diff.i/1e5*scale/diff.q, linewidth=0.5, color='Blue', label='Theoretical diff. signal')
+            ax.plot(diff.q, diff.i/1e5*scale/diff.q, linewidth=0.5, color='Blue', label='Theoretical')
         else:
             ax.plot(diff.q, diff.i/1e5*scale/diff.q, linewidth=0.5, color='Blue')
 
@@ -89,7 +89,7 @@ def plot_r2(data, save_path, save=False):
     fig, ax = plt.subplots(1, 1, figsize=(12, 7))
     ax.set_title('R² distribution', fontsize=16)
     ax.set_xlabel('R²', fontsize=13)
-    ax.set_ylabel('Number of models', fontsize=13)
+    ax.set_ylabel('Number of model pairs', fontsize=13)
     plt.hist(data, bins=50)
     if save:
         plt.savefig(f'{save_path}/histogram_R2.png', bbox_inches='tight', facecolor=(1, 1, 1))
@@ -117,8 +117,8 @@ def plot_activation_factor(data,save_path, save=False):
     """
     fig, ax = plt.subplots(1, 1, figsize=(12, 7))
     ax.set_title('Activation ratio distribution', fontsize=16)
-    ax.set_xlabel('Activation ratios', fontsize=13)
-    ax.set_ylabel('Number of models', fontsize=13)
+    ax.set_xlabel('Activation ratio', fontsize=13)
+    ax.set_ylabel('Number of model pairs', fontsize=13)
     plt.hist(abs(data), bins=50)
     if save:
         plt.savefig(f'{save_path}/histogram_activation_factor.png', bbox_inches='tight', facecolor=(1, 1, 1))
@@ -143,7 +143,7 @@ def plot_r2_activation(r2, activation, save_path, save=False):
     -------
     """
     fig, ax = plt.subplots(1, 1, figsize=(12, 7))
-    ax.scatter(r2, abs(activation))
+    ax.scatter(r2[abs(activation)<1,], abs(activation[abs(activation)<1,]))
     ax.set_title(f'R² Vs. Activation ratio', fontsize=15)
     ax.set_ylabel(f'Activation ratio', fontsize=15)
     ax.set_xlabel('R²', fontsize=15)
