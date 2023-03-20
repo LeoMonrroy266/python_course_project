@@ -123,7 +123,7 @@ def plot_activation_factor(data,save_path, save=False):
     if save:
         plt.savefig(f'{save_path}/histogram_activation_factor.png', bbox_inches='tight', facecolor=(1, 1, 1))
 
-def plot_r2_activation(r2, activation, save_path, save=False):
+def plot_r2_activation(r2, activation, save_path, save=False, best=False):
     """
     Plots a scatter plot of R² against the activation factor for set of data,
     with possibility of saving the plot.
@@ -143,9 +143,12 @@ def plot_r2_activation(r2, activation, save_path, save=False):
     -------
     """
     fig, ax = plt.subplots(1, 1, figsize=(12, 7))
-    ax.scatter(r2[abs(activation)<1,], abs(activation[abs(activation)<1,]))
-    ax.set_title(f'R² Vs. Activation ratio', fontsize=15)
-    ax.set_ylabel(f'Activation ratio', fontsize=15)
+    if best:
+        ax.scatter(r2[abs(activation)<1,], abs(activation[abs(activation)<1,]))
+    else:
+        ax.scatter(r2, abs(activation))
+    ax.set_title(f'R² Vs. Yield', fontsize=15)
+    ax.set_ylabel(f'Yield', fontsize=15)
     ax.set_xlabel('R²', fontsize=15)
     if save:
         plt.savefig(f'{save_path}/scatter_r2_activation.png', bbox_inches='tight', facecolor=(1, 1, 1))
