@@ -15,7 +15,7 @@ def get_rg_diff(indices_light, indices_dark, rg):
     indices_dark : np.array
     rg : np.array
 
-    Returns
+    Returnsgi
     -------
     np.array with difference of radius in gyration
     between all model pairs.
@@ -59,9 +59,9 @@ def plotter(indices, model1, model2, scales, AF2_data, ax, q_min, q_max):
         scale = scales[i]
 
         if i == indices[-1]:
-            ax.plot(diff.q, diff.i/1e5*scale/diff.q, linewidth=0.5, color='Blue', label='Theoretical')
+            ax.plot(diff.q, diff.i/1e5*scale, linewidth=0.5, color='Blue', label='Theoretical')
         else:
-            ax.plot(diff.q, diff.i/1e5*scale/diff.q, linewidth=0.5, color='Blue')
+            ax.plot(diff.q, diff.i/1e5*scale, linewidth=0.5, color='Blue')
 
 
 def plot_r2(data, save_path, save=False):
